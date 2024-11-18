@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cidade {
-    private String nome;
-    private List<Cidade> vizinhas;
+    private final String nome;
+    private final List<Cidade> vizinhas;
 
     public Cidade(String nome) {
         this.nome = nome;

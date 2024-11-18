@@ -3,7 +3,7 @@ package org.example;
 import java.util.*;
 
 class GerenciadorCidades {
-    private Map<String, Cidade> cidades;
+    private final Map<String, Cidade> cidades;
 
     public GerenciadorCidades() {
         this.cidades = new HashMap<>();
@@ -11,20 +11,25 @@ class GerenciadorCidades {
 
     public void inicializarCidades() {
         String[] nomesCidades = {
-                "São Paulo", "Campinas", "Santos", "Sorocaba",
-                "Ribeirão Preto", "São José dos Campos"
+                "Pires do Rio", "Ipameri","Orizona", "Urutai", "Palmelo",
+                "Santa Cruz", "Caldas Novas", "Catalao", "Vianopolis"
         };
 
         for (String nome : nomesCidades) {
             cidades.put(nome, new Cidade(nome));
         }
 
-        // Adicionar conexões iniciais
-        adicionarConexao("São Paulo", "Campinas");
-        adicionarConexao("São Paulo", "Santos");
-        adicionarConexao("São Paulo", "Sorocaba");
-        adicionarConexao("São Paulo", "São José dos Campos");
-        adicionarConexao("Campinas", "Ribeirão Preto");
+        // Conexões iniciais
+        adicionarConexao("Urutai", "Pires do Rio");
+        adicionarConexao("Caldas Novas", "Pires do Rio");
+        adicionarConexao("Palmelo", "Pires do Rio");
+        adicionarConexao("Orizona", "Pires do Rio");
+        adicionarConexao("Ipameri", "Catalao");
+        adicionarConexao("Urutai", "Ipameri");
+        adicionarConexao("Palmelo", "Santa Cruz");
+        adicionarConexao("Orizona", "Vianopolis");
+        adicionarConexao("Vianopolis", "Orizona");
+        adicionarConexao("Pires do Rio", "Orizona");
     }
 
     public void listarCidades() {
@@ -83,13 +88,13 @@ class GerenciadorCidades {
         for (Cidade cidade : visitadas) {
             if (!cidade.equals(inicio)) {
                 System.out.print(cidade.getNome() + ": ");
-                imprimirCaminho(predecessoras, inicio, cidade);
+                imprimirCaminho(predecessoras, cidade);
                 System.out.println();
             }
         }
     }
 
-    private void imprimirCaminho(Map<Cidade, Cidade> predecessoras, Cidade inicio, Cidade fim) {
+    private void imprimirCaminho(Map<Cidade, Cidade> predecessoras, Cidade fim) {
         List<String> caminho = new ArrayList<>();
         Cidade atual = fim;
         while (atual != null) {
