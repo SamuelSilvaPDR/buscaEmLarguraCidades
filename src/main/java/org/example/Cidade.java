@@ -23,7 +23,7 @@ public class Cidade {
      * @param nome O nome da cidade a ser criada
      */
     public Cidade(String nome) {
-        this.nome = nome;
+        this.nome = nome.toUpperCase();
         this.vizinhas = new ArrayList<>();
     }
 

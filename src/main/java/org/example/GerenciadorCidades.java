@@ -35,7 +35,7 @@ public class GerenciadorCidades {
         };
 
         for (String nome : nomesCidades) {
-            cidades.put(nome, new Cidade(nome));
+            cidades.put(nome.toUpperCase(), new Cidade(nome.toUpperCase()));
         }
 
         // Adiciona conexões iniciais entre as cidades
@@ -84,8 +84,8 @@ public class GerenciadorCidades {
      * @return true se a conexão foi adicionada com sucesso, false caso contrário
      */
     public boolean adicionarConexao(String cidade1, String cidade2) {
-        Cidade c1 = cidades.get(cidade1);
-        Cidade c2 = cidades.get(cidade2);
+        Cidade c1 = cidades.get(cidade1.toUpperCase());
+        Cidade c2 = cidades.get(cidade2.toUpperCase());
 
         if (c1 == null || c2 == null) {
             return false;

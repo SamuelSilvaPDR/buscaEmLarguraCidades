@@ -92,10 +92,10 @@ public class Main {
      */
     private static void adicionarConexao() {
         System.out.print("Digite o nome da primeira cidade: ");
-        String cidade1 = scanner.nextLine();
+        String cidade1 = scanner.nextLine().toUpperCase();
 
         System.out.print("Digite o nome da segunda cidade: ");
-        String cidade2 = scanner.nextLine();
+        String cidade2 = scanner.nextLine().toUpperCase();
 
         if (!gerenciador.cidadeExiste(cidade1) || !gerenciador.cidadeExiste(cidade2)) {
             System.out.println("Uma ou ambas as cidades não existem no sistema!");
@@ -117,7 +117,7 @@ public class Main {
      */
     private static void realizarBFS() {
         System.out.print("Digite o nome da cidade inicial para a busca: ");
-        String cidadeInicial = scanner.nextLine();
+        String cidadeInicial = scanner.nextLine().toUpperCase();
 
         if (!gerenciador.cidadeExiste(cidadeInicial)) {
             System.out.println("Cidade não encontrada no sistema!");
