@@ -2,16 +2,35 @@ package org.example;
 
 import java.util.*;
 
-class GerenciadorCidades {
+/**
+ * Classe responsável pelo gerenciamento de cidades e suas conexões.
+ * Implementa funcionalidades para adicionar, listar e buscar cidades,
+ * além de gerenciar suas conexões e realizar busca em largura (BFS).
+ *
+ * @author Guilherme Costa Alves Duarte, Hiann Alexander Mendes de Oliveira e Samuel da Silva de Oliveira
+ * @version 1.0
+ * @since 2024-12-05
+ */
+public class GerenciadorCidades {
+    /**
+     * Mapa que armazena todas as cidades, usando o nome como chave
+     */
     private final Map<String, Cidade> cidades;
 
+    /**
+     * Construtor que inicializa o mapa de cidades.
+     */
     public GerenciadorCidades() {
         this.cidades = new HashMap<>();
     }
 
+    /**
+     * Inicializa o sistema com um conjunto predefinido de cidades e suas conexões.
+     * Cria as cidades e estabelece as conexões iniciais entre elas.
+     */
     public void inicializarCidades() {
         String[] nomesCidades = {
-                "Pires do Rio", "Ipameri","Orizona", "Urutai", "Palmelo",
+                "Pires do Rio", "Ipameri", "Orizona", "Urutai", "Palmelo",
                 "Santa Cruz", "Caldas Novas", "Catalao", "Vianopolis"
         };
 
@@ -19,7 +38,7 @@ class GerenciadorCidades {
             cidades.put(nome, new Cidade(nome));
         }
 
-        // Conexões iniciais
+        // Adiciona conexões iniciais entre as cidades
         adicionarConexao("Urutai", "Pires do Rio");
         adicionarConexao("Caldas Novas", "Pires do Rio");
         adicionarConexao("Palmelo", "Pires do Rio");
@@ -32,6 +51,10 @@ class GerenciadorCidades {
         adicionarConexao("Pires do Rio", "Orizona");
     }
 
+    /**
+     * Lista todas as cidades cadastradas e suas respectivas conexões.
+     * Para cada cidade, exibe suas cidades vizinhas.
+     */
     public void listarCidades() {
         System.out.println("\nLista de cidades e suas conexões:");
         for (Cidade cidade : cidades.values()) {
@@ -39,72 +62,103 @@ class GerenciadorCidades {
             List<String> vizinhas = cidade.getVizinhas().stream()
                     .map(Cidade::getNome)
                     .toList();
-            System.out.println(vizinhas.isEmpty() ? "Sem conexões" : String.join(", ", vizinhas));
+            System.out.println(vizinhas.isEmpty() ? "Sem conexões" : vizinhas);
         }
     }
 
-    public boolean adicionarConexao(String nomeCidade1, String nomeCidade2) {
-        Cidade cidade1 = cidades.get(nomeCidade1);
-        Cidade cidade2 = cidades.get(nomeCidade2);
-
-        if (cidade1 != null && cidade2 != null) {
-            cidade1.adicionarVizinha(cidade2);
-            cidade2.adicionarVizinha(cidade1);
-            return true;
-        }
-        return false;
+    /**
+     * Verifica se uma cidade existe no sistema.
+     *
+     * @param nomeCidade nome da cidade a ser verificada
+     * @return true se a cidade existe, false caso contrário
+     */
+    public boolean cidadeExiste(String nomeCidade) {
+        return cidades.containsKey(nomeCidade);
     }
 
-    public void realizarBFS(String nomeCidadeInicial) {
-        Cidade inicio = cidades.get(nomeCidadeInicial);
+    /**
+     * Adiciona uma conexão bidirecional entre duas cidades.
+     *
+     * @param cidade1 nome da primeira cidade
+     * @param cidade2 nome da segunda cidade
+     * @return true se a conexão foi adicionada com sucesso, false caso contrário
+     */
+    public boolean adicionarConexao(String cidade1, String cidade2) {
+        Cidade c1 = cidades.get(cidade1);
+        Cidade c2 = cidades.get(cidade2);
+
+        if (c1 == null || c2 == null) {
+            return false;
+        }
+
+        c1.adicionarVizinha(c2);
+        c2.adicionarVizinha(c1);
+        return true;
+    }
+
+
+    /**
+     * Trabalho EDII
+     * Realiza uma busca em largura (Breadth-First Search - BFS) no grafo de cidades.
+     *
+     * Este método implementa o algoritmo BFS para percorrer todas as cidades conectadas
+     * a partir de uma cidade inicial especificada. A busca em largura visita primeiro todos
+     * os vértices adjacentes ao vértice atual antes de avançar para o próximo nível.
+     *
+     * @param cidadeInicial O nome da cidade onde a busca deve começar
+     *
+     * @throws NullPointerException Se a estrutura de cidades não foi inicializada
+     *
+     * Exemplo de uso:
+     *     GrafoCidades grafo = new GrafoCidades();
+     *     // ... adicionar cidades e conexões ...
+     *     grafo.realizarBFS("São Paulo");
+     *
+     * Funcionamento:
+     *     1. Verifica se a cidade inicial existe no grafo
+     *     2. Inicializa uma fila para controlar a ordem de visitação
+     *     3. Inicializa um conjunto para rastrear cidades já visitadas
+     *     4. Enquanto houver cidades na fila:
+     *         - Remove a primeira cidade da fila
+     *         - Visita todas as cidades vizinhas não visitadas
+     *         - Adiciona as cidades vizinhas não visitadas à fila
+     *
+     * Saída:
+     *     - Imprime a ordem em que as cidades são visitadas
+     *     - Se a cidade inicial não for encontrada, exibe uma mensagem de erro
+     */
+    public void realizarBFS(String cidadeInicial) {
+        Cidade inicio = cidades.get(cidadeInicial);
         if (inicio == null) {
-            System.out.println("Cidade não encontrada!");
+            System.out.println("Cidade inicial não encontrada!");
             return;
         }
 
         Queue<Cidade> fila = new LinkedList<>();
         Set<Cidade> visitadas = new HashSet<>();
-        Map<Cidade, Cidade> predecessoras = new HashMap<>();
+        List<String> ordemVisitacao = new ArrayList<>();
 
         fila.offer(inicio);
         visitadas.add(inicio);
 
-        System.out.println("\nOrdem de visitação:");
+        System.out.println("\nOrdem de visitação BFS a partir de " + cidadeInicial + ":");
         while (!fila.isEmpty()) {
             Cidade atual = fila.poll();
+            ordemVisitacao.add(atual.getNome());
             System.out.println("Visitando: " + atual.getNome());
 
             for (Cidade vizinha : atual.getVizinhas()) {
                 if (!visitadas.contains(vizinha)) {
-                    fila.offer(vizinha);
                     visitadas.add(vizinha);
-                    predecessoras.put(vizinha, atual);
+                    fila.offer(vizinha);
                 }
             }
         }
 
-        // Imprimir todos os caminhos
-        System.out.println("\nCaminhos a partir de " + inicio.getNome() + ":");
-        for (Cidade cidade : visitadas) {
-            if (!cidade.equals(inicio)) {
-                System.out.print(cidade.getNome() + ": ");
-                imprimirCaminho(predecessoras, cidade);
-                System.out.println();
-            }
+        System.out.println("\nLista final da ordem de visitação:");
+        for (int i = 0; i < ordemVisitacao.size(); i++) {
+            System.out.print(" " + (i + 1) +  "-" +ordemVisitacao.get(i));
         }
-    }
-
-    private void imprimirCaminho(Map<Cidade, Cidade> predecessoras, Cidade fim) {
-        List<String> caminho = new ArrayList<>();
-        Cidade atual = fim;
-        while (atual != null) {
-            caminho.add(0, atual.getNome());
-            atual = predecessoras.get(atual);
-        }
-        System.out.print(String.join(" → ", caminho));
-    }
-
-    public boolean cidadeExiste(String nome) {
-        return cidades.containsKey(nome);
+        System.out.println("\n");
     }
 }
